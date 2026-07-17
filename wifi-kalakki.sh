@@ -2,7 +2,7 @@
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then
-  echo -e "\n[-] Error: WiFi kalakki must be run with root privileges (sudo ./pattas)"
+  echo -e "\n[-] Error: WiFi kalakki must be run with root privileges (sudo ./wifi-kalakki.sh)"
   exit 1
 fi
 
@@ -60,8 +60,8 @@ while true; do
 
   case $CHOICE in
     1)
-      echo -e "\n[+] Starting Wi-Fi Scanner..."
-      echo "[!] INSTRUCTION: Press Ctrl+C when you see your innathe era to stop scanning!"
+      echo -e "\n[+] Starting Ayalokkath thalayidal..."
+      echo "[!] INSTRUCTION: Press Ctrl+C when you see your ayolakkathe kuttangal to stop thalayidal!"
       sleep 4
 
       rm -f /tmp/pattas_scan*
@@ -78,7 +78,7 @@ while true; do
         continue
       fi
 
-      echo -e "\n--- INNATHE ERAKAL ---"
+      echo -e "\n--- INNATHE EASHANI ---"
 
       # Columns: $1 = BSSID, $4 = channel, $14 = ESSID
       awk -F, '
@@ -127,7 +127,7 @@ while true; do
       airodump-ng --bssid "$SEL_BSSID" -c "$SEL_CHANNEL" -w /tmp/pattas_target --output-format csv "$MON_INTERFACE"
       trap cleanup SIGINT
 
-      echo -e "\n[+] Concentrated scan stopped. Parsing connected devices..."
+      echo -e "\n[+] Concentrated parathooshanam stopped. Parsing connected vallikal..."
 
       TARGET_CSV="/tmp/pattas_target-01.csv"
       if [ ! -f "$TARGET_CSV" ]; then
@@ -192,7 +192,7 @@ while true; do
 
       echo -e "\n[+] Cleaning up monitor mode..."
       airmon-ng stop "$MON_INTERFACE" > /dev/null 2>&1
-      echo "[+] Exiting tool. Goodbye!"
+      echo "[+] Bagavane ishwara nallath cheytha nallath kittane!.Exiting tool.!"
       exit 0
       ;;
       2)
