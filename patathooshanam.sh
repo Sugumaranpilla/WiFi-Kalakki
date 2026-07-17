@@ -43,12 +43,6 @@ check_bin() {
   fi
 }
 
-check_bin airmon-ng
-check_bin airodump-ng
-check_bin aireplay-ng
-check_bin aircrack-ng
-check_bin iwconfig
-check_bin awk
 
 if [ "$MISSING" -eq 1 ]; then
   echo -e "\n[-] Some required tools are still missing. Please check the errors above."
