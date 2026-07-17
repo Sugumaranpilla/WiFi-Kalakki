@@ -3,12 +3,12 @@
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then
-  echo "[-] Please run vedi marunn as root (sudo ./vedi_marunn.sh)"
+  echo "[-] Please run parathooshanam as root (sudo ./vedi_marunn.sh)"
   exit 1
 fi
 
 echo "============================================="
-echo "     VEDI MARUNN - DEPENDENCY INSTALLER      "
+echo "     PARATHOOSHANAM - DEPENDENCY INSTALLER      "
 echo "============================================="
 echo "[+] Preparing the gunpowder (vedi marunn)..."
 
@@ -55,5 +55,5 @@ if [ "$MISSING" -eq 1 ]; then
   exit 1
 fi
 
-echo -e "\n[+] Gunpowder ready! You can now run pattas."
+echo -e "\n[+] parathooshanam ready! You can now run wifi kalakki."
 exit 0
