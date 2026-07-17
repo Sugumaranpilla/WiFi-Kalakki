@@ -8,7 +8,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo "============================================="
-echo "     PARATHOOSHANAM - DEPENDENCY INSTALLER      "
+echo "     PARATHOOSHANAM - DEPENDENCY INSTALLER   "
 echo "============================================="
 echo "[+] Preparing the gunpowder (vedi marunn)..."
 
