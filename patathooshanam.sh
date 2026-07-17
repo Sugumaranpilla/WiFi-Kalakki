@@ -15,7 +15,7 @@ echo "[+] Preparing the gunpowder (vedi marunn)..."
 # List of required packages for pattas to run
 # wireless-tools -> provides iwconfig, used directly in pattas
 # aircrack-ng    -> provides airodump-ng, airmon-ng, aireplay-ng, etc.
-REQUIRED_PKGS=(aircrack-ng wireless-tools net-tools python3 python3-pip)
+REQUIRED_PKGS=(aircrack-ng wireless-tools net-tools python3 python3-pip dos2unix)
 
 echo "[+] Updating package lists..."
 if ! apt-get update -y; then
